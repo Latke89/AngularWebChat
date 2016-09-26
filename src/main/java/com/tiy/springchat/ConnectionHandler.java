@@ -1,52 +1,54 @@
 package com.tiy.springchat;
 
+import jodd.json.JsonParser;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 /**
- * Created by Brett on 9/23/16.
+ * Created by Brett on 9/25/16.
  */
 public class ConnectionHandler implements Runnable {
 
-//	Socket connection = null;
-//	ArrayList<String> messageHistory;
-//
-//	public ConnectionHandler (Socket incomingConnection) {
-//		this.connection = incomingConnection;
-////        this.messageHistory = messageHistory;
-//	}
-//
-//	public ConnectionHandler () {
-//	}
-//
-	public void run() {
-//		try {
-//			handleIncomingConnection(connection);
-//		} catch (Exception exception) {
-//			exception.printStackTrace();
-//		}
+	Socket connection;
+
+	public ConnectionHandler(Socket incomingConnection) {
+		this.connection = incomingConnection;
 	}
-//
-//	public void handleIncomingConnection (Socket clientSocket) throws Exception {
-//		System.out.println("Connection accepted");
-//
-//		// this is how we read from the client
-//		BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-//		// this is how we write back to the client
-//		PrintWriter outputToClient = new PrintWriter(clientSocket.getOutputStream(), true);
-//
-//		String inputLine = inputFromClient.readLine();
-//		if (!inputLine.equals("return:history")) {
-//			myDatabase.postMessage(myDatabase.conn, inputLine);
-//		}
-//
-//		messageHistory = myDatabase.chatHistory(myDatabase.conn);
-//		for (String currentString : messageHistory) {
-//			outputToClient.println(currentString);
-//		}
-//		outputToClient.println("end:history");
-//	}
+
+	public void run() {
+		handleIncomingConnections(connection);
+	}
+
+
+	private void handleIncomingConnections(Socket inputSocket) {
+		try {
+			System.out.println("Incoming connection from " + inputSocket.getInetAddress().getHostAddress());
+
+			BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(inputSocket.getInputStream()));
+			PrintWriter outputToClient = new PrintWriter(inputSocket.getOutputStream(), true);
+
+//			String firstInput;
+//			String clientName;
+//			firstInput = inputFromClient.readLine();
+//			String[] nameArray = firstInput.split("=");
+//			clientName = nameArray[1];
+//			outputToClient.println("Thank you, " + clientName);
+
+
+
+			String inputLine;
+			while ((inputLine = inputFromClient.readLine()) != null) {
+				System.out.println(inputLine);
+//				System.out.println("Received message: " + inputLine + " from " + inputSocket.toString());
+				outputToClient.println(inputLine);
+			}
+		}catch (IOException exception){
+			exception.printStackTrace();
+		}
+	}
+
 }

@@ -1,7 +1,7 @@
 angular.module('AngularChatApp', [])
     .controller('ChatController', function($scope, $http) {
 
-        $scope.message;
+        $scope.messages;
 
         $scope.newMessage = {};
 
@@ -13,7 +13,7 @@ angular.module('AngularChatApp', [])
                 function successCallBack(response) {
                     console.log(response.data);
                     console.log("Adding message to scope");
-                    $scope.message = response.data;
+                    $scope.messages = response.data;
                 },
                 function errorCallBack (response) {
                     console.log("Unable to send message");
@@ -24,12 +24,13 @@ angular.module('AngularChatApp', [])
         $scope.sendMessage = function () {
             console.log("About to send message " + JSON.stringify($scope.newMessage));
 
-            $http.get("/sendMessage.json", $scope.newMessage)
+            $http.post("/sendMessage.json", $scope.newMessage)
             .then(
                 function successCallBack(response) {
                     console.log(response.data);
                     console.log("Adding message to scope");
-                    $scope.message = response.data;
+                    $scope.messages = response.data;
+                    $scope.newMessage = {}
                 },
                 function errorCallBack (response) {
                     console.log("Unable to send message");

@@ -1,10 +1,12 @@
 package com.tiy.springchat;
 
+import jodd.json.JsonSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -40,4 +42,12 @@ public class ChatRestController {
 
 		return getMessages();
 	}
+
+	public String jsonSave(Message jsonMessage) {
+		JsonSerializer jsonSerializer = new JsonSerializer().deep(true);
+		String jsonString = jsonSerializer.serialize(jsonMessage);
+
+		return jsonString;
+	}
+
 }

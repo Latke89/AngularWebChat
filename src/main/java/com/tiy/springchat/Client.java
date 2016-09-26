@@ -6,86 +6,39 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Brett on 9/23/16.
+ * Created by Brett on 9/25/16.
  */
 public class Client {
 
-	static final String HOST_ADDRESS = "localhost";
-	static final int PORT_NUMBER = 8088;
-	Socket clientSocket = null;
-	PrintWriter out = null;
-	BufferedReader in = null;
+	String response;
 
+	public void startClient(String chatString) {
 
-	public String sendMessage(String userName, String message){
-		String serverResponse = null;
-		ArrayList<String> messageHistory = null;
+//        Scanner inputScanner = new Scanner(System.in);
 		try {
-			clientSocket = new Socket(HOST_ADDRESS, PORT_NUMBER);
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			out.println(userName + ": " + message);
-			//get initial response
-			serverResponse = in.readLine();
+			// connect to the server on the target port
+			Socket clientSocket = new Socket("localhost", 8005);
 
-			//loop to accept the entire chat history into a String Arraylist
-			messageHistory = new ArrayList<String>();
-			while (!serverResponse.equalsIgnoreCase("end:history")){
-				messageHistory.add(serverResponse);
-				serverResponse = in.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			// once we connect to the server, we also have an input and output stream
+			PrintWriter outputToServer = new PrintWriter(clientSocket.getOutputStream(), true);
+			BufferedReader inputFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+//            System.out.println("Enter your message to send: ");
+			String userMessage = chatString;
+			outputToServer.println(userMessage);
+			response = inputFromServer.readLine();
+			System.out.println(response);
+
+			// close the connection
+			clientSocket.close();
+
+
+		} catch (IOException clientException) {
+			clientException.printStackTrace();
 		}
 
-		//reverse the arrayList into a String with a newline between each message
-		StringBuilder historyBuilder = new StringBuilder();
-		for (int count = messageHistory.size(); count > 0; count--){
-			if (count == 1){
-				historyBuilder.append(messageHistory.get(count - 1).toCharArray());
-			} else{
-				historyBuilder.append(messageHistory.get(count - 1).toCharArray());
-				historyBuilder.append('\n');
-			}
-		}
-		String chatHistory = historyBuilder.toString();
-		return chatHistory;
-	}
-
-	public String refresh(){
-		String serverResponse = null;
-		ArrayList<String> messageHistory = null;
-		try {
-			clientSocket = new Socket(HOST_ADDRESS, PORT_NUMBER);
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			out.println("return:history");
-			//get initial response
-			serverResponse = in.readLine();
-
-			//loop to accept the entire chat history into a String Arraylist
-			messageHistory = new ArrayList<String>();
-			while (!serverResponse.equalsIgnoreCase("end:history")){
-				messageHistory.add(serverResponse);
-				serverResponse = in.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		//reverse the arrayList into a String with a newline between each message
-		StringBuilder historyBuilder = new StringBuilder();
-		for (int count = messageHistory.size(); count > 0; count--){
-			if (count == 1){
-				historyBuilder.append(messageHistory.get(count - 1).toCharArray());
-			} else{
-				historyBuilder.append(messageHistory.get(count - 1).toCharArray());
-				historyBuilder.append('\n');
-			}
-		}
-		String chatHistory = historyBuilder.toString();
-		return chatHistory;
 	}
 }

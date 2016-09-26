@@ -1,51 +1,48 @@
 package com.tiy.springchat;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
- * Created by Brett on 9/23/16.
+ * Created by Brett on 9/25/16.
  */
-public class Server {
+public class Server implements Runnable {
+
+	public static void main(String[] args) {
+		Server myServer = new Server();
+		myServer.startServer();
+	}
+
+	public void run() {
+
+	}
 
 
-//	public static void main(String[] args) {
-//		Server myServer = new Server();
-//		myServer.kickThingsOff();
-//	}
-//
-//	public void kickThingsOff() {
-//		try {
-//			System.out.println("Running...");
-//
-//			startServer();
-//		} catch(SQLException ex) {
-//			ex.printStackTrace();
-//		}
-//	}
-//
-//	Socket connection = null;
-//
-//	public Server () {}
-//
-//	public Server (Socket connection) {this.connection = connection;}
-//
-//	public void startServer() {
-//		try {
-//			System.out.println("Starting Server");
-//			ServerSocket listener = new ServerSocket(8088);
-//
-//			while(true) {
-//				Socket incConnection = listener.accept();
-//				ConnectionHandler handler = new ConnectionHandler(incConnection, myDatabase);
-//				Thread multiThreadServer = new Thread(handler);
-//
-//				multiThreadServer.start();
-//			}
-//		} catch (IOException ex) {
-//			ex.printStackTrace();
-//		}
-//	}
+	public void startServer() {
+		try {
+			ServerSocket serverListener = new ServerSocket(8005);
+			System.out.println("Ready to accept incoming connections!");
+
+			while(true){
+				Socket clientSocket = serverListener.accept();
+				ConnectionHandler myHandler = new ConnectionHandler(clientSocket);
+				Thread myThread = new Thread(myHandler);
+				myThread.start();
+			}
+
+
+
+		}catch(IOException serverException){
+			serverException.printStackTrace();
+		}
+
+	}
+
 }
