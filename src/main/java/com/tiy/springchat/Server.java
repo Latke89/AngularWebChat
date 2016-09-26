@@ -23,7 +23,7 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-
+		startServer();
 	}
 
 
@@ -34,7 +34,7 @@ public class Server implements Runnable {
 
 			while(true){
 				Socket clientSocket = serverListener.accept();
-				ConnectionHandler myHandler = new ConnectionHandler(clientSocket);
+				ConnectionHandler myHandler = new ConnectionHandler(clientSocket, this);
 				Thread myThread = new Thread(myHandler);
 				myThread.start();
 			}

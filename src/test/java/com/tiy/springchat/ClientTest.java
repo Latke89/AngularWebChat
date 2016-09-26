@@ -50,16 +50,20 @@ public class ClientTest {
 		myMessage.id = 100;
 		myMessage.user = myUser;
 
-//		Thread myThread = new Thread(myServer);
-//		myThread.start();
+		Thread myThread = new Thread(myServer);
+		myThread.start();
+//		Thread.sleep(3000);
 
 		String jsonString = jsonSave(myMessage);
-
-		myClient.startClient(jsonString);
+		myClient.newClientSocket();
+		myClient.sendMessage(jsonString);
 
 		String input = myClient.response;
 
+		System.out.println(myServer.myMessages.size());
 
+
+		assertEquals(1, myServer.myMessages.size());
 		assertEquals(input, myMessage.text);
 
 

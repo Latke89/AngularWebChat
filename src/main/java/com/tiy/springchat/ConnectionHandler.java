@@ -14,9 +14,11 @@ import java.net.Socket;
 public class ConnectionHandler implements Runnable {
 
 	Socket connection;
+	Server myServer;
 
-	public ConnectionHandler(Socket incomingConnection) {
+	public ConnectionHandler(Socket incomingConnection, Server myServer) {
 		this.connection = incomingConnection;
+		this.myServer = myServer;
 	}
 
 	public void run() {
@@ -39,14 +41,18 @@ public class ConnectionHandler implements Runnable {
 //			outputToClient.println("Thank you, " + clientName);
 
 
-
 			String inputLine;
-			while ((inputLine = inputFromClient.readLine()) != null) {
-				Message recievedMessage = jsonRestore(inputLine);
-				System.out.println(recievedMessage.text);
-//				System.out.println("Received message: " + inputLine + " from " + inputSocket.toString());
-				outputToClient.println(recievedMessage.text);
+			while((inputLine = inputFromClient.readLine()) != null) {
+				System.out.println("Received message \"" + inputLine + "\" from " + connection.toString());
+				Message currentMessage = jsonRestore(inputLine);
+				String messageContent = currentMessage.user.userName + " said: " + currentMessage.text;
+				myServer.saveMessage(messageContent);
+				for (String message : myServer.myMessages) {
+					outputToClient.println(message);
+				}
+				outputToClient.println("TXT::DONE");
 			}
+
 		}catch (IOException exception){
 			exception.printStackTrace();
 		}
