@@ -21,6 +21,8 @@ public class ChatRestController {
 	@Autowired
 	MessageRepository messages;
 
+	Client myClient;
+
 	@RequestMapping(path = "/messages.json", method = RequestMethod.GET)
 	public List<Message> getMessages() {
 		Iterable <Message> msgIterable =  messages.findAll();
@@ -43,7 +45,25 @@ public class ChatRestController {
 		return getMessages();
 	}
 
-	public String jsonSave(Message jsonMessage) {
+	@RequestMapping(path = "/history", method = RequestMethod.GET)
+	public List<String> getHistory (String jsonMessage, HttpSession session, @RequestBody Message message) throws Exception {
+		ArrayList<String> myMessages = new ArrayList<>();
+		User user = (User)session.getAttribute("user");
+		if (user == null) {
+			throw new Exception("User must be logged in");
+		}
+		message.user = user;
+		messages.save(message);
+
+		jsonSerialize(message);
+
+		myMessages.add(myClient.response);
+
+
+		return myMessages;
+	}
+
+	public String jsonSerialize(Message jsonMessage) {
 		JsonSerializer jsonSerializer = new JsonSerializer().deep(true);
 		String jsonString = jsonSerializer.serialize(jsonMessage);
 

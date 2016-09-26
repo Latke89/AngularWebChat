@@ -42,13 +42,22 @@ public class ConnectionHandler implements Runnable {
 
 			String inputLine;
 			while ((inputLine = inputFromClient.readLine()) != null) {
-				System.out.println(inputLine);
+				Message recievedMessage = jsonRestore(inputLine);
+				System.out.println(recievedMessage.text);
 //				System.out.println("Received message: " + inputLine + " from " + inputSocket.toString());
-				outputToClient.println(inputLine);
+				outputToClient.println(recievedMessage.text);
 			}
 		}catch (IOException exception){
 			exception.printStackTrace();
 		}
 	}
+
+	public Message jsonRestore(String jsonTD) {
+		JsonParser toDoItemParser = new JsonParser();
+		Message message = toDoItemParser.parse(jsonTD, Message.class);
+
+		return message;
+	}
+
 
 }

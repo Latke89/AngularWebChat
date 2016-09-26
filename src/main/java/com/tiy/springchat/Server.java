@@ -15,6 +15,8 @@ import java.util.ArrayList;
  */
 public class Server implements Runnable {
 
+	ArrayList<String> myMessages = new ArrayList<>();
+
 	public static void main(String[] args) {
 		Server myServer = new Server();
 		myServer.startServer();
@@ -43,6 +45,10 @@ public class Server implements Runnable {
 			serverException.printStackTrace();
 		}
 
+	}
+
+	public void saveMessage(String message) {
+		myMessages.add(message);
 	}
 
 }
