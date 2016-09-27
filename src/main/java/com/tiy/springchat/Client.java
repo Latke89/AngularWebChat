@@ -30,7 +30,7 @@ public class Client {
 
 	}
 
-	public ArrayList<String> sendUserMessage(String userMessage) throws IOException {
+	public ArrayList<String> sendMessage(String userMessage) throws IOException {
 		outputToServer.println(userMessage);
 		ArrayList<String> allMessages = new ArrayList<>();
 		String serverResponse;

@@ -25,7 +25,7 @@ public class ChatRestController {
 
 	@RequestMapping(path = "/messages.json", method = RequestMethod.GET)
 	public List<Message> getMessages() {
-		Iterable <Message> msgIterable =  messages.findAll();
+		Iterable <Message> msgIterable =  messages.findAllByOrderByIdDesc();
 		ArrayList<Message> msgList = new ArrayList<>();
 		for (Message msg : msgIterable) {
 			msgList.add(msg);
